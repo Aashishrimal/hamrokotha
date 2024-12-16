@@ -20,7 +20,7 @@ curl 'http://www.4kotha.com/wp-admin/admin-ajax.php' \
     -H 'Referer: http://www.4kotha.com/user-dashboard/'\
     -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0'\
     -H 'X-Requested-With: XMLHttpRequest'\
-    --data-raw 'slug=apartment&pid={pid}&action=mmtre_get_property_type_details_input_form_fe&mmtre_nonce=623d30845d'\
+    --data-raw 'slug=apartment&pid={pid}&action=mmtre_get_property_type_details_input_form_fe&mmtre_nonce=49802cb373'\
     --insecure | grep -oP '98\d+'
 """
     # Run the curl command using subprocess
