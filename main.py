@@ -1,14 +1,34 @@
-from typing import Optional
-
 from fastapi import FastAPI
+import subprocess
+import re
 
 app = FastAPI()
 
+@app.get("/get_data/pid/{pid}")
+async def get_data(pid: int):
+    # Define the curl command as a string
+    cookie = "wordpress_77b7898063b2a498589395a22b16287c=rupesh224%7C1734103254%7C3gmxmJ3LCZOYjYIpW5wwGZ6hRPkFm9qsJEXUV8E0XRN%7C0981a0990bc91aa1e5ff779c09e4e486146254376d3daf3a57c3888343f7c5e7; PHPSESSID=m6smc4d0rn5bvuk58g8hugap6v; wordpress_logged_in_77b7898063b2a498589395a22b16287c=rupesh224%7C1733066454%7CbF0LVvNdSHKvrDVu38UfMceyJ9x9V6zeah1CAxjjD6w%7Ca70053d1bc4d628a202b6af8bba262a0b0a42aec92fc7feb75812759a8c6f99b; wfwaf-authcookie-7390d758a99f62df17e443d0b10ea9b9=12494%7Cother%7Cread%7Ca4ccefcc0d656fd34c5dc118b88e830dee6af62df2e41e2042954645ff0d47f4"
+    
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+    curl_command = f"""
+curl 'http://www.4kotha.com/wp-admin/admin-ajax.php' \
+    -H 'Accept: application/json, text/javascript, */*; q=0.01'\
+    -H 'Accept-Language: en-GB,en;q=0.9,en-US;q=0.8,ja;q=0.7,ne;q=0.6'\
+    -H 'Connection: keep-alive'   -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8'\
+    -H 'Cookie: {cookie}'\
+    -H 'DNT: 1'   -H 'Origin: http://www.4kotha.com' \
+    -H 'Referer: http://www.4kotha.com/user-dashboard/'\
+    -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0'\
+    -H 'X-Requested-With: XMLHttpRequest'\
+    --data-raw 'slug=apartment&pid={pid}&action=mmtre_get_property_type_details_input_form_fe&mmtre_nonce=623d30845d'\
+    --insecure | grep -oP '98\d+'
+"""
+    # Run the curl command using subprocess
+    response = subprocess.run(curl_command, shell=True, capture_output=True, text=True)
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Optional[str] = None):
-    return {"item_id": item_id, "q": q}
+    # Extract numbers starting with '98' followed by digits using regex
+    matches = re.findall(r'98\d+', response.stdout)
+
+    # Return the result as a JSON response
+    return {"matches": matches}
+
